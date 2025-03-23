@@ -9,6 +9,7 @@
     animation: rotation 1s linear infinite;
 
     margin: 32px auto;
+    display: block;
 }
 
 @keyframes rotation {

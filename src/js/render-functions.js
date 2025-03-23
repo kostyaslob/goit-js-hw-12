@@ -1,6 +1,9 @@
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
+ 
 const gallery = document.querySelector(".gallery");
 const loader = document.querySelector(".loader");
 const loadMoreBtn = document.querySelector(".load-more");
@@ -10,7 +13,6 @@ const lightbox = new SimpleLightbox(".gallery a", {
     captionDelay: 250,
     navText: ["<<",">>"], 
 });
-
 
 export function showLoader() {
     loader.classList.remove("hidden");
@@ -38,23 +40,6 @@ function scrollPage() {
 }
 
 export function renderGallery(images) {
-    if (images.length === 0) {
-        iziToast.show({
-            message: `Sorry, there are no images matching <br/> your search query. Please try again!`,            
-            messageColor: "#fafafb",
-            messageSize: "16px",
-            messageLineHeight: "20px",
-
-            backgroundColor: "#ef4040",
-            iconUrl: warningIcon,
-
-            progressBar: false,
-            position: "topRight",
-            
-            });
-        return;
-    }
-
     const markup = images
         .map((image) => `
         <li class="gallery-item">

@@ -1,5 +1,5 @@
 import { fetchData } from "./js/pixabay-api";
-import { renderGallery, clearGallery, showLoader, hideLoader } from "./js/render-functions";
+import { renderGallery, showLoader, hideLoader, clearGallery, showLoadMoreButton, hideLoadMoreButton} from "./js/render-functions";
 
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
@@ -9,11 +9,15 @@ import cautionIcon from "./img/caution-icon.svg";
 
 const form = document.querySelector(".form");
 const input = document.querySelector("input[name='search-text']");
+const loadMoreBtn = document.querySelector(".load-more");
 
-form.addEventListener("submit", (event) => {
+let query = "";
+let page = 1;
+const perPage = 15;
+
+form.addEventListener("submit", async (event) => {
     event.preventDefault();
-
-    const query = input.value.trim();
+    query = input.value.trim();
     if (query === "") {
         iziToast.show({
             title: "Caution",
@@ -34,16 +38,33 @@ form.addEventListener("submit", (event) => {
         });
         return;
     }
-
+    page = 1;
     clearGallery();
+    hideLoadMoreButton();
     showLoader();
 
-    fetchData(query)
-        .then((images) => {
-            renderGallery(images);
-        })
-        .catch(() => {
-            iziToast.show({              
+    try {
+        const data = await fetchData(query, page, perPage);
+        if (data.hits.length === 0) {
+            iziToast.show({
+                message: `Sorry, there are no images matching <br/> your search query. Please try again!`,            
+                messageColor: "#fafafb",
+                messageSize: "16px",
+                messageLineHeight: "20px",
+
+                backgroundColor: "#ef4040",
+                iconUrl: warningIcon,
+
+                progressBar: false,
+                position: "topRight",
+            
+            });
+            return;
+        }
+        renderGallery(data.hits);
+        if (page * perPage < data.totalHits) showLoadMoreButton();
+    } catch (error) {
+                iziToast.show({              
                 message: "Something went wrong. Please try again later.",
                 messageColor: "#fafafb",
                 messageSize: "16px",
@@ -55,11 +76,49 @@ form.addEventListener("submit", (event) => {
                 progressBar: false,
                 position: "topRight",
             });
-        })
-        .finally(() => {
-            hideLoader();
-            form.reset();
+    } finally {
+        hideLoader();
+        form.reset();
+    }
+});
+
+loadMoreBtn.addEventListener("click", async () => {
+    page += 1;
+    showLoader();
+    try {
+        const data = await fetchData(query, page, perPage);
+        renderGallery(data.hits);
+        if (page * perPage >= data.totalHits) {
+            hideLoadMoreButton();
+            iziToast.show({              
+                message: "We're sorry, but you've reached the end of search results.",
+                messageColor: "#fafafb",
+                messageSize: "16px",
+                messageLineHeight: "20px",
+
+                backgroundColor: "#ef4040",
+                iconUrl: warningIcon,
+
+                progressBar: false,
+                position: "topRight",
+            });
+        }
+    } catch (error) {
+        iziToast.show({              
+            message: "Something went wrong. Please try again later.",
+            messageColor: "#fafafb",
+            messageSize: "16px",
+            messageLineHeight: "20px",
+
+            backgroundColor: "#ef4040",
+            iconUrl: warningIcon,
+
+            progressBar: false,
+            position: "topRight",
         });
+    } finally {
+        hideLoader();
+    }
 });
 
 
