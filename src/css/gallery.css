@@ -3,6 +3,10 @@
     background-size: 16px;
 }
 
+.hidden {
+    display: none;
+}
+
 .form {
     display: flex;
     gap: 8px;

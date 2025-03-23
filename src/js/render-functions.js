@@ -1,13 +1,9 @@
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-import iziToast from "izitoast";
-import "izitoast/dist/css/iziToast.min.css";
-
-import warningIcon from "../img/warning-icon.svg";
-
 const gallery = document.querySelector(".gallery");
 const loader = document.querySelector(".loader");
+const loadMoreBtn = document.querySelector(".load-more");
 
 const lightbox = new SimpleLightbox(".gallery a", {
     captionsData: "alt",
@@ -15,16 +11,30 @@ const lightbox = new SimpleLightbox(".gallery a", {
     navText: ["<<",">>"], 
 });
 
+
 export function showLoader() {
-    loader.style.display = "block";
+    loader.classList.remove("hidden");
 }
 
 export function hideLoader() {
-    loader.style.display = "none";
+    loader.classList.add("hidden");
 }
 
 export function clearGallery() {
     gallery.innerHTML = "";
+}
+
+export function showLoadMoreButton() {
+    loadMoreBtn.classList.remove("hidden");
+}
+
+export function hideLoadMoreButton() {
+    loadMoreBtn.classList.add("hidden");
+}
+
+function scrollPage() {
+    const { height } = gallery.firstElementChild.getBoundingClientRect();
+    window.scrollBy({ top: height * 2, behavior: "smooth" });
 }
 
 export function renderGallery(images) {
@@ -85,4 +95,5 @@ export function renderGallery(images) {
 
     gallery.insertAdjacentHTML("beforeend", markup);
     lightbox.refresh();
+    scrollPage();
 }
