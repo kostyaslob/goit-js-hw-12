@@ -87,17 +87,17 @@ loadMoreBtn.addEventListener("click", async () => {
     showLoader();
     try {
         const data = await fetchData(query, page, perPage);
-        renderGallery(data.hits);
+        renderGallery(data.hits, true);
         if (page * perPage >= data.totalHits) {
             hideLoadMoreButton();
             iziToast.show({              
-                message: "We're sorry, but you've reached the end of search results.",
-                messageColor: "#fafafb",
+                message: `We're sorry, but you've reached the end of search results.`,
+                messageColor: "#fff",
                 messageSize: "16px",
                 messageLineHeight: "20px",
 
-                backgroundColor: "#ef4040",
-                iconUrl: warningIcon,
+                backgroundColor: "#ffa000",
+                iconUrl: cautionIcon,
 
                 progressBar: false,
                 position: "topRight",

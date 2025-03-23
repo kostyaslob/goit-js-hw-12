@@ -15,11 +15,11 @@ const lightbox = new SimpleLightbox(".gallery a", {
 });
 
 export function showLoader() {
-    loader.classList.remove("hidden");
+    loader.classList.remove("visually-hidden");
 }
 
 export function hideLoader() {
-    loader.classList.add("hidden");
+    loader.classList.add("visually-hidden");
 }
 
 export function clearGallery() {
@@ -27,11 +27,11 @@ export function clearGallery() {
 }
 
 export function showLoadMoreButton() {
-    loadMoreBtn.classList.remove("hidden");
+    loadMoreBtn.classList.remove("visually-hidden");
 }
 
 export function hideLoadMoreButton() {
-    loadMoreBtn.classList.add("hidden");
+    loadMoreBtn.classList.add("visually-hidden");
 }
 
 function scrollPage() {
@@ -39,7 +39,7 @@ function scrollPage() {
     window.scrollBy({ top: height * 2, behavior: "smooth" });
 }
 
-export function renderGallery(images) {
+export function renderGallery(images, shouldScroll = false) {
     const markup = images
         .map((image) => `
         <li class="gallery-item">
@@ -80,5 +80,7 @@ export function renderGallery(images) {
 
     gallery.insertAdjacentHTML("beforeend", markup);
     lightbox.refresh();
-    scrollPage();
+    if (shouldScroll) {
+        scrollPage();
+    }
 }
